@@ -12,92 +12,120 @@ template<typename T>
 class DoubleLinkedNode {
 
  private:
-  T Node;
+  T& Node;
   DoubleLinkedNode* Pre_ptr;
   DoubleLinkedNode* Next_ptr;
+  DoubleLinkedNode copy;
  public:
-  DoublyLinkedNode(T value,int pre_p,int next_ptr);
-    /*for the nod in between list.size>1
-   */
-  DoublyLinkedNode(T value,int next_ptr);
+  DoubleLinkedNode<T> DoublyLinkedNode(DoubleLinkedNode* pre_p,T value,DoubleLinkedNode* next_ptr);
+
+  DoubleLinkedNode<T> DoublyLinkedNode(T value,DoubleLinkedNode* next_ptr);
   //for the nod at the beginning list.size()>1
 
-  DoublyLinkedNode(T value,int pre_ptr);
-    //for the nod at the end list.size()>1
 
-  DoublyLinkedNode(T value);
+
+
+
     //for the node in list.size()=1
    /* */
-
-  DoublyLinkedNode();
+   DoubleLinkedNode<T> DoublyLinkedNodeDoublyLinkedNode();
 
   //SetNode(T value);
-
-  GetNodePtr(const DoubleLinkedNode Node_arg)const;
+  <T>Value(DoubleLinkedNode* Node_arg);
+  DoubleLinkedNode<T>* Ptr(const DoubleLinkedNode* Node_arg)const;
   //return the node value of type t
   //return &(this->Node);
 
-  GetPrePtr(const DoubleLinkedNode Node_arg)const;
-
+  DoubleLinkedNode<T>* GetPrePtr(const DoubleLinkedNode* Node_arg)const;
+  DoubleLinkedNode<T>* GetNextPtr(const DoubleLinkedNode* Node_arg)const;
 
 
   //return this->Pre_ptr;
-  ModifyNodeNextPtr(DoubleLinkedNode *Node_arg);
-  GetNextPtr(const DoubleLinkedNode Node_arg)const;
+  void ModifyNodeNextPtr(DoubleLinkedNode* Node_arg,DoubleLinkedNode* Next);
+
     //return this->Next_ptr;
 
+  void ModifyNodePrePtr(DoubleLinkedNode* Pre,DoubleLinkedNode *Node_arg );
   virtual ~DoubleLinkedNode();
     //destructor
 
 };
 #endif //LINKEDLIST_DOUBLELINKEDNODE_H
 template <typename T>
-DoubleLinkedNode<T>::DoublyLinkedNode(T value,DoubleLinkedNode* pre_p,DoubleLinkedNode* next_ptr){
-  Node(value);
-  Pre_ptr(pre_p);
+DoubleLinkedNode<T> DoublyLinkedNode(DoubleLinkedNode* pre_ptr,T value,DoubleLinkedNode* next_ptr){
+  *Node(value);
+  Pre_ptr(pre_ptr);
   Next_ptr(next_ptr);
   //return &this
 }
 template <typename T>
-DoubleLinkedNode<T>::DoublyLinkedNode(T value,DoubleLinkedNode* next_ptr) {
-  Node(value);
+DoubleLinkedNode<T> DoublyLinkedNode(T value,DoubleLinkedNode* next_ptr) {
+  *Node(value);
   Pre_ptr(&Node);
   Next_ptr(next_ptr);
 }
 
 template <typename T>
-DoubleLinkedNode<T>::DoublyLinkedNode(DoubleLinkedNode* pre_ptr,T value){
-  Node(value);
+DoubleLinkedNode<T> DoublyLinkedNode(DoubleLinkedNode* pre_ptr,T value){
+  *Node(value);
   Pre_ptr(pre_p);
   Next_ptr(&Node);
 }
 template <typename T>
-DoubleLinkedNode<T>::DoublyLinkedNode(T value) {
+DoubleLinkedNode<T> DoublyLinkedNode(T value) {
 
-  Node(value);
+  *Node(value);
   Pre_ptr(&Node);
   Next_ptr(&Node);
 }
 
-DoubleLinkedNode<T>::DoublyLinkedNode() {
-  Node(nullptr);
+DoubleLinkedNode<T> DoublyLinkedNode() {
+  *Node(nullptr);
   Pre_ptr(nullptr);
   Next_ptr(nullptr);
 
 }
-
-DoubleLinkedNode* DoubleLinkedNode::GetNodePtr(const DoubleLinkedNode Node_arg)const{
-  return &Node_arg ;
+template <typename T>
+T DoubleLinkedNode::Value(DoubleLinkedNode *Node_arg) {
+  return (*Node_arg).Node
 }
+DoubleLinkedNode* DoubleLinkedNode::Ptr(DoubleLinkedNode Node_arg){
+  return &Node_arg;
+}
+const DoubleLinkedNode* DoubleLinkedNode::Ptr(const DoubleLinkedNode Node_arg) {
 
-DoubleLinkedNode* DoubleLinkedNode::GetPrePtr(const DoubleLinkedNode Node_arg)const{
+  return const_cast<*Node_arg>;
+}
+DoubleLinkedNode* DoubleLinkedNode::GetPrePtr( DoubleLinkedNode Node_arg){
   return Node_arg.Pre_ptr;
-
 }
-DoubleLinkedNode* DoubleLinkedNode::GetNextPtr(const DoubleLinkedNode Node_arg)const{
+const DoubleLinkedNode* DoubleLinkedNode::GetPrePtr(const DoubleLinkedNode Node_arg){
+  copy(Node_arg);
+  return copy.Pre_ptr;
+}
+
+DoubleLinkedNode* DoubleLinkedNode::GetNextPtr( DoubleLinkedNode Node_arg){
   return Node_arg.Next_ptr;
 }
+const DoubleLinkedNode* DoubleLinkedNode::GetNextPtr(const DoubleLinkedNode Node_arg){
+  copy(Node_arg);
+  return copy.Next_ptr;
+}
+
 void ModifyNodeNextPtr(DoubleLinkedNode *Node_arg,DoubleLinkedNode*Next){
-  //can you modify the private members?
+
   (*Node_arg).Next_ptr= Next;
+}
+void ModifyNodePrePtr(DoubleLinkedNode* Pre,DoubleLinkedNode *Node_arg){
+  (*Node_arg).Pre_ptr= Pre;
+}
+
+
+void DoubleLinkedNode::~DoubleLinkedNode(DoubleLinkedNode* Node_arg) {
+  if ((*Node_arg).Node){
+    delete [](*Node_arg).Node;
+    (*Node_arg).Node= nullptr;
+    (*Node_arg).Pre_ptr= nullptr;
+    (*Node_arg).Next_ptr= nullptr;
+  }
 }
