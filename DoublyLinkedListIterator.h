@@ -5,22 +5,23 @@
 #ifndef LINKEDLIST_GENERICDOUBLYLINKEDLISTITERATOR_H
 #define LINKEDLIST_GENERICDOUBLYLINKEDLISTITERATOR_H
 #include "DoublyLinkedList.h"
-
+template <typename T>
+class DoublyLinkedList{};
 template<typename T>
 class DoublyLinkedListIterator {
 
   //you must implement at least the methods below
   //you are free to add (and will likely need to add)
   //more members and methods
- public:
+ private:
   int Position;
-  T CurrentValue;
-  DoubleLinkedNodePtr* CurrentNode;
-  DoublyLinkedListPtr* CurrentList;
-
+  T* CurrentValuePtr;
+  DoubleLinkedNode<T>* CurrentNodePtr;
+  DoublyLinkedList<T>* CurrentListPtr;
+ public:
   DoublyLinkedListIterator(const DoublyLinkedListIterator& orig);
 
-  explicit DoublyLinkedListIterator(DoublyLinkedlist* List);
+  explicit DoublyLinkedListIterator(DoublyLinkedList<T>* List);
   //are the two iterators equal?
   //they are if they are over the same doubly linked list
   //and (they are referring to the same element in the list
@@ -31,7 +32,7 @@ class DoublyLinkedListIterator {
   bool operator!=(const DoublyLinkedListIterator<T>& rhs) const;
 
   //is the iterator safe to dereference?
-  operator bool() const;
+  explicit operator bool() const;
 
   //go to the next element
   DoublyLinkedListIterator<T>& operator++(); //pre
@@ -48,64 +49,113 @@ class DoublyLinkedListIterator {
   T& operator*();
 
 };
+template<typename T>
+DoublyLinkedListIterator<T>::DoublyLinkedListIterator(DoublyLinkedList<T>* orig_list):Position(0){
 
-DoublyLinkedListIterator::DoublyLinkedListIterator(DoublyLinkedlist* orig_list){
-  Position(0);
+
   CurrentListPtr(orig_list);
-  CurrentNodePtr(CurrentListPtr.head);
-  CurrentValue=DoubleLinkedNode::Value(CurrentNodePtr);
+  CurrentNodePtr(CurrentListPtr->head);
+  CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
 }
-DoublyLinkedListIterator::DoublyLinkedListIterator(const DoublyLinkedListIterator& orig){
-  Position(orig.Position);
+template <typename T>
+DoublyLinkedListIterator<T>::DoublyLinkedListIterator(const DoublyLinkedListIterator& orig):Position(orig.Position){
+
+
   CurrentListPtr(orig.CurrentList);
   CurrentNodePtr(orig.CurrentList);
-  CurrentValue=DoubleLinkedNode::Value(CurrentNodePtr);
+  CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
 }
 
 template <typename T>
 bool DoublyLinkedListIterator<T>::operator==(const DoublyLinkedListIterator<T> &rhs) const {
-  if(CurrentList != rhs.CurrentList){
+  if(CurrentListPtr != rhs.CurrentListPtr){
     return false;
   }else {
     return Position == rhs.Position;
   }
 }
-
-bool DoublyLinkedListIterator::operator!=(const DoublyLinkedListIterator<T> &rhs) const {
-  if(CurrentList == rhs.CurrentList){
+template <typename T>
+bool DoublyLinkedListIterator<T>::operator!=(const DoublyLinkedListIterator<T> &rhs) const {
+  if(CurrentListPtr == rhs.CurrentListPtr){
     return false;
   }else {
     return Position != rhs.Position;
   }
 }
 //automatically a bool type?
-bool DoublyLinkedListIterator::operator bool() const {
-  if (!this){//will refer to stdlib?
-    return true;
-  }else{
+template <typename T>
+DoublyLinkedListIterator<T>::operator bool() const {
+  if (this== nullptr){
     return false;
   }
+  else return this->CurrentListPtr== nullptr;
 }
-T& DoublyLinkedListIterator::operator*() {
-  return &CurrentValue;
+template <typename T>
+T& DoublyLinkedListIterator<T>::operator*() {
+  return CurrentValuePtr;
 }
-const T& DoublyLinkedListIterator::operator*() const {
-  return const_cast<&CurrentList>;
+template <typename T>
+const T& DoublyLinkedListIterator<T>::operator*() const {
+  return const_cast<const T&>(CurrentValuePtr);
 }
-DoublyLinkedListIterator<T> & DoublyLinkedListIterator::operator--() {
-  if (this->CurrentNode->Pre_ptr){
-    this->CurrentNode=this->CurrentNode.Pre_ptr;
-    return DoubleLinkedNode::Value(this.CurrentNode);
+template <typename T>
+DoublyLinkedListIterator<T> & DoublyLinkedListIterator<T>::operator--() {
+  if (DoubleLinkedNode<T>::GetPrePtr(this->CurrentNodePtr)){
+    this->CurrentNodePtr=DoubleLinkedNode<T>::GetPrePtr(this->CurrentNodePtr);
+    CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
+    Position--;
+    return &this;
+
   }
-  else return this->CurrentNode;
+  else return &this;
 }
-const DoublyLinkedListIterator<T> DoublyLinkedListIterator::operator--(int ) {
-  if (this->CurrentNode->Pre_ptr){
-    this->CurrentNode=this->CurrentNode->Pre_ptr;
-    return const_cast<DoubleLinkedNode::Ptr(this->CurrentNode)>;
+template <typename T>
+const DoublyLinkedListIterator<T> DoublyLinkedListIterator<T>::operator--(int ) {
+  if (DoubleLinkedNode<T>::GetPrePtr(this->CurrentNodePtr)){
+    this->CurrentNodePtr=DoubleLinkedNode<T>::GetPrePtr(this->CurrentNodePtr);
+    CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
+    Position--;
+    DoublyLinkedListIterator<T>temp=(DoublyLinkedListIterator(this));
+    DoublyLinkedListIterator<T>*temp_ref=&temp;
+    const_cast<const DoublyLinkedListIterator<T>*>(temp_ref);//is it the correct way of const casting?
+    return temp_ref;
   }
-  else return nullptr;
+  else {
+    DoublyLinkedListIterator<T>*this_ref=&this;
+    const_cast<const DoublyLinkedListIterator<T>*>(this_ref);
+    return this_ref;
+  }
+
+
 }
-DoublyLinkedListIterator<T>& operator++(); //pre
-const DoublyLinkedListIterator<T> operator++(int);//post
+template <typename T>
+DoublyLinkedListIterator<T>& DoublyLinkedListIterator<T>:: operator++(){
+  if (DoubleLinkedNode<T>::GetNextPtr(this->CurrentNodePtr)){
+    this->CurrentNodePtr=DoubleLinkedNode<T>::GetNextPtr(this->CurrentNodePtr);
+    CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
+    Position++;
+    return &this;
+  }
+  else return &this;
+}
+
+
+template <typename T>
+const DoublyLinkedListIterator<T> DoublyLinkedListIterator<T>::operator++(int){
+  if (DoubleLinkedNode<T>::GetNextPtr(this->CurrentNodePtr)){
+    this->CurrentNodePtr=DoubleLinkedNode<T>::GetNextPtr(this->CurrentNodePtr);
+    CurrentValuePtr=DoubleLinkedNode<T>::ValuePtr(CurrentNodePtr);
+    Position++;
+    DoublyLinkedListIterator<T>temp=(DoublyLinkedListIterator(this));
+    DoublyLinkedListIterator<T>*temp_ref=&temp;
+
+    const_cast<const DoublyLinkedListIterator<T>*>(temp_ref);
+    return temp_ref;
+  }
+  else{
+    DoublyLinkedListIterator<T>*this_ref=&this;
+    const_cast<const DoublyLinkedListIterator<T>*>(this_ref);
+    return this_ref;
+  }
+}//post
 #endif //LINKEDLIST_GENERICDOUBLYLINKEDLISTITERATOR_H

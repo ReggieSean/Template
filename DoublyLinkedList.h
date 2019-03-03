@@ -20,10 +20,10 @@ class DoublyLinkedList {
  public:
   using Node_Ptr = DoubleLinkedNode<T>*;
 
-  using iterator =  DoubleLinkedNode<T>*/*put the type of your iterator here*/;
-  using const_iterator = const DoubleLinkedNode<T>* /*put the type of your const iterator here*/;
-  using reverse_iterator = DoubleLinkedNode<T>*/*put the type of your reverse iterator here*/;
-  using const_reverse_iterator =const DoubleLinkedNode<T>* /*put the type of your const reverse iterator here*/;
+  using iterator = /*put the type of your iterator here*/;
+  using const_iterator = /*put the type of your const iterator here*/;
+  using reverse_iterator = /*put the type of your reverse iterator here*/;
+  using const_reverse_iterator = /*put the type of your const reverse iterator here*/;
 
   //create a Doubly Linked List that has the same values
   //as in the vector and in the same order
@@ -98,7 +98,7 @@ class DoublyLinkedList {
   int len;
 };
 template<typename T>
-DoublyLinkedList::DoublyLinkedList(const std::vector<T> &values):len((*values).size()) {
+DoublyLinkedList<T>::DoublyLinkedList(const std::vector<T> &values):len((*values).size()) {
   int i = 0;
   Node_Ptr temp_1= nullptr;
   Node_Ptr temp_node= nullptr;
@@ -147,39 +147,50 @@ DoublyLinkedList::DoublyLinkedList(const std::vector<T> &values):len((*values).s
 //write to the stream each element in the list in order
 //with a space in between them
 
-DoublyLinkedList::DoublyLinkedList() {
+template<typename T>
+DoublyLinkedList<T>::DoublyLinkedList() {
   len(0);
   head(nullptr);
   tail(nullptr);
 
 }
-
-
-DoublyLinkedList:: clear();
+template<typename T>
+DoublyLinkedList<T>:: clear(){
+  DoubleLinkedNode* CurrentNode=DoubleLinkedNode::GetPtr(this->head);
+  DoubleLinkedNode* NextPtr=DoubleLinkedNode::GetNextPtr(this->head);
+  for(int i=0; i<this->len;i++){
+    DoubleLinkedNode::CurrentNode.~DoubleLinkedNode();
+    CurrentNode=NextPtr;
+    NextPtr=DoubleLinkedNode::GetNextPtr(CurrentNode);
+  }
+  this->len=0;
+  this->head=nullptr;
+  this->tail= nullptr;
+}
 
 //get a reference to the front element in the list
 template <typename T>
-const T& DoublyLinkedList:: front() const{
-  return this->head;
+const T& DoublyLinkedList<T>:: front() const{
+  return const_cast<this->head>;
 }
 template <typename T>
-T& DoublyLinkedList::front(){
+T& DoublyLinkedList<T>::front(){
   return this->head;
 }
 
 //get a reference to the last element in the list
 template <typename T>
-const T& DoublyLinkedList::back() const{
-  return this->tail;
+const T& DoublyLinkedList<T>::back() const{
+  return const_cast<this->tail>;
 }
 template <typename T>
-T& DoublyLinkedList::back(){
+T& DoublyLinkedList<T>::back(){
   return this->tail;
 }
 
 //add a value to the front of the list
 template <typename T>
-void DoublyLinkedList::push_front(const T& value){
+void DoublyLinkedList<T>::push_front(const T& value){
   if (value){
     DoubleLinkedNode NewNode=DoubleLinkedNode::DoublyLinkedNode(nullptr,value,(this->head));
     DoublyLinkedList::len+=1;
@@ -189,7 +200,7 @@ void DoublyLinkedList::push_front(const T& value){
 
 //add a value to the back of the list
 template <typename T>
-void DoublyLinkedList::push_back(const T& value){
+void DoublyLinkedList<T>::push_back(const T& value){
   if (value){
     DoubleLinkedNode NewNode=DoubleLinkedNode::DoublyLinkedNode((this->tail),value, nullptr);
     DoublyLinkedList::len+=1;
@@ -197,24 +208,24 @@ void DoublyLinkedList::push_back(const T& value){
   }
 }
 
-//is the list empty?
-
-bool DoublyLinkedList::empty() const{
-  if (this){//if the variable using now is not a nullptr
-    return this->len==0;
-  }
+template<typename T>
+bool DoublyLinkedList<T>::empty() const {
+  return this->len==0;
 }
-
-//return the number of elements in the list
-int DoublyLinkedList::size() const{
-  if(this){
-    return this->len;
-  }
+template<typename T>
+int DoublyLinkedList<T>::size() const {
+   return this->len;
+}
+template<typename T>
+DoublyLinkedList<T>::~DoublyLinkedList() {
+  this->clear();
+  this= nullptr;
+//will this work?
 }
 
 //return a constant bidirectional iterator to the front of the list
-const_iterator DoublyLinkedList::begin() const;
-const_iterator DoublyLinkedList::end() const;
+const_iterator DoublyLinkedList<T>::begin() const;
+const_iterator DoublyLinkedList<T>::end() const;
 
 //return a nonconstant bidirectional iterator to the front of the list
 iterator begin();
